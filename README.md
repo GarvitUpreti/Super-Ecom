@@ -4,7 +4,7 @@ A basic e-commerce web application built with React, TypeScript, and React Route
 
 ## Deployment
 
-**Live URL:** [Paste your deployment link here]
+**Live URL:** https://super-ecom.vercel.app/
 
 ## Setup & Run
 
