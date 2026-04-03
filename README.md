@@ -1,46 +1,89 @@
-# Getting Started with Create React App
+# Super Ecom — E-Commerce Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A basic e-commerce web application built with React, TypeScript, and React Router v6. Users can browse products, filter by category, view product details, and manage a shopping cart.
 
-## Available Scripts
+## Deployment
 
-In the project directory, you can run:
+**Live URL:** [Paste your deployment link here]
 
-### `npm start`
+## Setup & Run
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```bash
+# Install dependencies
+npm install
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+# Start development server
+npm start
 
-### `npm test`
+# Build for production
+npm run build
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Run end-to-end tests (requires Playwright browsers installed)
+npx playwright install chromium
+npm run test:e2e
+```
 
-### `npm run build`
+The app runs at **http://localhost:3000** by default.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Product Listing** — Grid of products fetched from the API with multi-category filtering.
+- **Category Filter** — Multi-select category chips that persist in the URL via search params. Works across refresh, back button, and shared links.
+- **Product Detail** — Full product info fetched dynamically from the API by product ID (`/product/:id`).
+- **Cart** — Add items from the detail page, remove items from the cart page. Cart count displayed in the navbar with a badge.
+- **Cart Persistence** — Cart state is saved to localStorage and survives page refreshes.
+- **Navigation** — Navbar with links to Home and Cart. Back-to-Home link on product detail page.
+- **Responsive** — Fluid flexbox layout that adapts to all screen sizes.
+- **Animations** — Fade-in on product detail page, hover effects on product cards, Add-to-Cart button feedback.
+- **Accessibility** — Semantic HTML (`<nav>`, `<main>`, `<article>`, `<header>`), `aria-label` attributes, and proper link/button roles.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Tech Stack
 
-### `npm run eject`
+| Concern            | Choice                              |
+|--------------------|-------------------------------------|
+| Framework          | React 19 (functional components)    |
+| Language           | TypeScript                          |
+| Routing            | React Router v6 (useSearchParams)   |
+| State Management   | React Context API + useReducer      |
+| API                | Platzi Fake Store API               |
+| Styling            | Inline CSS                          |
+| Testing            | Playwright                          |
+| Scaffolding        | Create React App (CRA)              |
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Architecture
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+src/
+  api/apiClient.ts          — Fetch-based API client
+  context/CartContext.tsx    — Cart state via Context + useReducer + localStorage
+  types/index.ts            — TypeScript interfaces (Product, Category, CartItem)
+  utils/imageHelper.ts      — Image URL cleaning (handles bad API data)
+  components/
+    Navbar.tsx              — Top navigation bar with Home & Cart links
+    ProductCard.tsx         — Product thumbnail card (links to detail page)
+    ProductGrid.tsx         — Responsive flex grid of ProductCards
+    CategoryFilter.tsx      — Multi-select category filter chips
+  pages/
+    HomePage.tsx            — Product listing + category filter + URL sync
+    ProductDetailPage.tsx   — Product detail fetched by ID + Add to Cart
+    CartPage.tsx            — Cart items list + remove + totals
+  App.tsx                   — Routes + CartProvider + Navbar
+  index.tsx                 — Entry point
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Assumptions & Limitations
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Multiple Category Filtering
+The Platzi API supports filtering by a single `categoryId` per request. To support multi-category selection, the app fires **parallel API calls** (one per selected category) via `Promise.all` and deduplicates the merged results by product ID.
 
-## Learn More
+### API Data Quality
+The Platzi Fake Store API is public — anyone can create products and categories. User-created entries often have junk names or placeholder images from dead services (placeimg.com, dummyimage.com). The app filters categories to the original 5 (IDs 1–5) and handles bad image URLs gracefully with a fallback.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Sorting
+The API does not expose a sort parameter. Since the assignment requires server-side filtering only, sorting is not implemented to stay within that constraint.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Bonus Features Implemented
+
+- **localStorage Cart Persistence** — Cart survives page refreshes.
+- **CSS Transitions** — Fade-in on product detail page, hover lift on product cards, button state feedback.
+- **Accessibility** — Semantic HTML elements, ARIA labels, keyboard-navigable links.
